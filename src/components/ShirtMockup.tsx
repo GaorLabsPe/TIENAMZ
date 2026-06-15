@@ -107,14 +107,14 @@ export const ShirtMockup: React.FC<ShirtMockupProps> = ({ productId, side, theme
 
           {/* Mock fabric texture - Turbulance simulation */}
           <filter id="fabricNoise" x="0%" y="0%" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />
             <feColorMatrix type="matrix" values="0 0 0 0 .5   0 0 0 0 .5   0 0 0 0 .5  0.07 0 0 0 0" />
             <feComposite operator="in" in2="SourceGraphic" />
           </filter>
 
           {/* Washed texture simulation */}
           <filter id="washTexture" x="0%" y="0%" width="100%" height="100%">
-            <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="3" result="rough" />
+            <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="1" result="rough" />
             <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.22 0" result="roughAlpha" />
             <feBlend mode="overlay" in="SourceGraphic" in2="roughAlpha" />
           </filter>

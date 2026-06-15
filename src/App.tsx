@@ -507,9 +507,9 @@ export default function App() {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentSlide}
-                    initial={{ opacity: 0, scale: 1.02 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
                     className="absolute inset-0 w-full h-full"
                   >
@@ -644,9 +644,8 @@ export default function App() {
                 const chosenSize = selectedSizes[product.id] || 'M';
 
                 return (
-                  <motion.div
+                  <div
                     key={product.id}
-                    layoutId={`product-card-${product.id}`}
                     onClick={() => {
                       setSelectedProduct(product);
                       setDetailSide('front');
@@ -761,7 +760,7 @@ export default function App() {
                       </div>
 
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
