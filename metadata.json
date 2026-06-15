@@ -1,0 +1,6 @@
+{
+  "name": "Mz.B Lt.6",
+  "description": "Catalogo virtual premium de polos urbanos de Mz.B Lt.6 con carrito de compras y pedidos por WhatsApp",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
