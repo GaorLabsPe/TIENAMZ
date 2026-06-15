@@ -76,7 +76,7 @@ export default function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const lookbookSlides = [
     {
-      image: "/src/assets/images/streetwear_model_1_1781542451654.jpg",
+      image: "/images/streetwear_model_1_1781542451654.jpg",
       collection: "COLECCIÓN RAÍCES",
       title: "ESPÍRITU DE LA CALLE",
       subtitle: "Prendas de alta densidad y corte oversized real.",
@@ -84,7 +84,7 @@ export default function App() {
       categoryId: "raices"
     },
     {
-      image: "/src/assets/images/streetwear_model_2_1781542467830.jpg",
+      image: "/images/streetwear_model_2_1781542467830.jpg",
       collection: "COLECCIÓN COYUNTURA",
       title: "CULTURA REBELDE",
       subtitle: "Cada polo es un lienzo urbano con conciencia social.",
@@ -277,7 +277,7 @@ export default function App() {
             {/* Background Image with Dark Vignette */}
             <div className="absolute inset-0 z-0">
               <img
-                src="/src/assets/images/splash_cover_1781542865107.jpg"
+                src="/images/splash_cover_1781542865107.jpg"
                 alt="Welcome Background"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center filter brightness-[0.34] contrast-[1.08] saturate-[0.9]"
@@ -291,7 +291,7 @@ export default function App() {
               <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-zinc-500 uppercase">
                 MZ.B LT.6 // CAPÍTULO I
               </span>
-              <span className="text-[10px] font-mono font-purple-400 bg-red-950/40 border border-red-900/40 rounded-full px-2.5 py-1 flex items-center gap-1">
+              <span className="text-[10px] font-mono text-zinc-400 bg-red-950/40 border border-red-900/40 rounded-full px-2.5 py-1 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                 LIMA - ESTACIÓN LOS JARDINES
               </span>
