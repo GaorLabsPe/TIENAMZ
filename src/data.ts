@@ -6,7 +6,7 @@ export const STORE_TIENDA_INFO = {
   yapeNumber: "926 718 192", // Standard Peruvian format
   yapeOwner: "Josué Benjamin - Mz.B Lt.6",
   storePhone: "51926718192", // WhatsApp link target (must be pure numbers + country code)
-  storeAddress: "Av. Las Flores de la Primavera 1420 (Segundo Piso), San Juan de Lurigancho, Lima (Frente a la Estación Los Jardines)",
+  storeAddress: "Av. Las Flores de la Primavera 1420 (Segundo Piso), Lima (Frente a la Estación Esperanza)",
   storeHours: "Lunes a Sábado: 11:30 AM - 8:30 PM | Domingos: Cerrado",
 };
 

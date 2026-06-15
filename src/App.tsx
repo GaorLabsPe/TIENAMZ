@@ -11,9 +11,6 @@ import {
   Clock,
   Phone,
   Check,
-  Music,
-  Play,
-  Pause,
   ChevronRight,
   ChevronLeft,
   Info,
@@ -29,6 +26,7 @@ import { Product, CartItem, OrderDetails } from './types';
 import { ShirtMockup } from './components/ShirtMockup';
 import { SizeGuide } from './components/SizeGuide';
 import { PaymentInstructions } from './components/PaymentInstructions';
+import { Logo } from './components/Logo';
 
 export default function App() {
   // Theme state: dark / light
@@ -108,15 +106,6 @@ export default function App() {
   const [deliveryReference, setDeliveryReference] = useState('');
   const [yapeTx, setYapeTx] = useState('');
   const [checkoutSubmitted, setCheckoutSubmitted] = useState(false);
-
-  // Simulated cassette street-player states
-  const [musicPlaying, setMusicPlaying] = useState(false);
-  const [activeTrack, setActiveTrack] = useState(0);
-  const tracks = [
-    { title: "De La Calle Nace Todo (Instrumental)", author: "SJL Underground" },
-    { title: "Riqueza es la Vida (Beat tape)", author: "Manzana B Records" },
-    { title: "Identidad & Resistencia (Dub edit)", author: "Mz.B Lote 6" }
-  ];
 
   // Initialize helper size selectors for all products
   useEffect(() => {
@@ -217,7 +206,7 @@ export default function App() {
     msg += `===============================\n\n`;
     msg += `👤 *Cliente:* ${customerName.trim() || '(No brindado)'}\n`;
     msg += `📱 *Teléfono:* ${customerPhone.trim() || '(No brindado)'}\n`;
-    msg += `🚚 *Modalidad:* ${checkoutMode === 'delivery' ? '🚗 Envío por Delivery (S/ 10.00)' : '🏪 Recojo en Tienda (SJL)'}\n\n`;
+    msg += `🚚 *Modalidad:* ${checkoutMode === 'delivery' ? '🚗 Envío por Delivery (S/ 10.00)' : '🏪 Recojo en Tienda (Estación Esperanza)'}\n\n`;
 
     if (checkoutMode === 'delivery') {
       msg += `📍 *Dirección de Entrega:*\n${deliveryAddress.trim() || 'No colocado'}\n`;
@@ -291,108 +280,91 @@ export default function App() {
               <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-zinc-500 uppercase">
                 MZ.B LT.6 // CAPÍTULO I
               </span>
-              <span className="text-[10px] font-mono text-zinc-400 bg-red-950/40 border border-red-900/40 rounded-full px-2.5 py-1 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                LIMA - ESTACIÓN LOS JARDINES
+              <span className="text-[10px] font-mono text-zinc-300 bg-black/50 border border-[#ff7da2]/40 rounded-full px-2.5 py-1 flex items-center gap-1.5 backdrop-blur-sm shadow-[0_2px_15px_rgba(255,125,162,0.15)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ff7da2] animate-pulse" />
+                LIMA - ESTACIÓN ESPERANZA
               </span>
             </div>
 
             {/* Main Center Content Grid */}
-            <div className="relative z-10 w-full max-w-3xl mx-auto px-6 py-4 flex flex-col justify-center text-center space-y-8 my-auto">
+            <div className="relative z-10 w-full max-w-5xl mx-auto px-6 py-4 flex flex-col justify-center text-center space-y-4 sm:space-y-6 my-auto">
               
               {/* Brand Typography Header wrapper */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.6 }}
-                  className="inline-block px-3 py-1 font-mono text-[10px] font-black tracking-widest text-[#ff7da2] bg-[#ff7da2]/10 rounded-full border border-[#ff7da2]/20 uppercase"
+                  className="inline-block px-3.5 py-1 font-mono text-[9px] sm:text-xs font-black tracking-[0.25em] text-[#ff7da2] bg-[#ff7da2]/10 rounded-full border border-[#ff7da2]/20 uppercase"
                 >
-                  DE LA CALLE NACE TODO
+                  🔥 EDICIÓN LIMITADA - POLOS HEAVY OVERSIZED 🔥
                 </motion.div>
                 
-                <motion.h1
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.7 }}
-                  className="text-5xl sm:text-7xl md:text-8xl font-black italic tracking-tighter bg-gradient-to-r from-[#5fc1ff] via-[#ff7da2] to-[#6ae29a] bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(255,125,162,0.3)] select-none"
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.82, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex justify-center py-2 sm:py-4 select-none cursor-pointer filter drop-shadow-[0_20px_50px_rgba(255,125,162,0.22)] hover:scale-105 transition-transform duration-500"
                 >
-                  Mz.B Lt.6
-                </motion.h1>
+                  <Logo size="xl" centered={true} />
+                </motion.div>
 
                 <motion.p
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.7 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                  className="text-xs sm:text-sm font-mono tracking-[0.3em] text-[#f2ea5b] uppercase"
+                  animate={{ opacity: 0.95 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="text-[10px] sm:text-sm font-mono font-bold tracking-[0.35em] text-[#f2ea5b] uppercase"
                 >
-                  Concept Real Streetwear Store
+                  CAPÍTULO I: DE LA CALLE NACE TODO
                 </motion.p>
               </div>
 
-              {/* Manifest highlights */}
+              {/* Single imposing, highly authoritative statement representation - made smaller to keep entry accessible */}
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 max-w-2xl mx-auto border-t border-b border-zinc-800/85 py-6 font-mono text-left"
+                transition={{ delay: 0.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className="max-w-md sm:max-w-xl mx-auto bg-black/90 border border-zinc-900 rounded-lg p-4 sm:p-5 backdrop-blur-xl shadow-[0_10px_25px_rgba(0,0,0,0.95)]"
               >
-                <div className="space-y-1">
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">🧵 MATERIA PRIMA</span>
-                  <p className="text-xs text-zinc-100 font-bold leading-tight">Algodón Reactivo Limpio de corte pesado de 230 gramos.</p>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">👕 CONFECCIÓN OVERSIZED</span>
-                  <p className="text-xs text-zinc-100 font-bold leading-tight">Ancho de cuerpo expandido, hombro caído y basta reforzada.</p>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">🎨 IDENTIDAD LATENTE</span>
-                  <p className="text-xs text-zinc-100 font-bold leading-tight">Mensajes cargados de memoria, arte callejero y lucha urbana.</p>
-                </div>
+                <p className="text-[10px] sm:text-xs font-mono font-medium tracking-widest text-[#e4e4e7] uppercase leading-relaxed">
+                  "PRE-VENTA DROP I : POLOS HEAVYWEIGHT OVERSIZED DE 230G • ALGODÓN REACTIVO COMPACTO • CONFECCIÓN PRIME Y CALIDAD DE VANGUARDIA"
+                </p>
+                <div className="w-12 h-[2px] bg-gradient-to-r from-[#5fc1ff] via-[#ff7da2] to-[#6ae29a] mx-auto mt-3 rounded-full animate-pulse" />
+              </motion.div>
+
+              {/* Promo badge / Subtitle info as single phrase */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.8 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
+                className="text-center font-mono text-[9px] sm:text-xs text-zinc-400 font-bold uppercase tracking-[0.2em]"
+              >
+                ⚡ ENVÍO GRATUITO A LIMA METROPOLITANA | PRE-VENTA CON STOCK EXTREMADAMENTE LIMITADO ⚡
               </motion.div>
 
               {/* Action Welcome Buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.7 }}
-                className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-sm mx-auto w-full pt-2"
+                transition={{ delay: 0.7, duration: 0.7 }}
+                className="flex justify-center items-center max-w-sm mx-auto w-full pt-1"
               >
-                {/* Enter + Start Mixtape cassette block */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowEntrance(false);
-                    setMusicPlaying(true);
-                  }}
-                  className="w-full px-5 py-4 rounded-xl font-mono text-xs font-black tracking-widest uppercase bg-gradient-to-r from-[#ff7da2] to-pink-600 hover:from-pink-500 hover:to-[#ff7da2] text-black shadow-[0_4px_25px_rgba(255,125,162,0.4)] hover:shadow-[0_4px_30px_rgba(255,125,162,0.6)] cursor-pointer flex items-center justify-center gap-2 group transition-all duration-300 transform hover:scale-[1.03]"
-                >
-                  <Music className="w-4 h-4 animate-bounce" />
-                  <span>ENTRAR CON BEATS</span>
-                </button>
-
-                {/* Enter Silent */}
                 <button
                   type="button"
                   onClick={() => setShowEntrance(false)}
-                  className="w-full px-5 py-4 rounded-xl font-mono text-xs font-bold tracking-widest uppercase bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:text-white transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full px-6 py-4.5 rounded-xl font-mono text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-[#5fc1ff] via-[#ff7da2] to-[#6ae29a] hover:brightness-110 text-black shadow-[0_4px_35px_rgba(255,125,162,0.45)] cursor-pointer flex items-center justify-center gap-2 group transition-all duration-300 transform hover:scale-[1.03]"
                 >
-                  <span>ENTRAR SILENCIOSO</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <span>INGRESAR A LA TIENDA</span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </motion.div>
-
-              {/* Disclaimer reminder */}
-              <span className="text-[9px] font-mono text-zinc-500 italic block mt-2">
-                * Para disfrutar la experiencia total de la calle, recomendamos activar los beats en el ingreso.
-              </span>
 
             </div>
 
             {/* Bottom Credit Signature */}
             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 text-center select-none border-t border-zinc-900/40">
               <p className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest">
-                © MZ.B LT.6 REGISTRADO EN SAN JUAN DE LURIGANCHO - TODOS LOS POLOS SON EXPERIMENTALMENTE OVERSIZED
+                © MZ.B LT.6 - CONCEPTUAL STREETWEAR - TODOS LOS POLOS SON EXPERIMENTALMENTE OVERSIZED DE EXTREMA CALIDAD
               </p>
             </div>
 
@@ -418,13 +390,16 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* Logo brand representation - accurate to user's attached file font visual and gradient branding */}
-          <div className="flex flex-col items-start cursor-pointer group" onClick={() => setActiveTab('catalog')}>
-            <h1 className="text-2xl md:text-3xl font-black italic tracking-tighter bg-gradient-to-r from-[#5fc1ff] via-[#ff7da2] to-[#6ae29a] bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(255,125,162,0.25)] select-none">
-              Mz.B Lt.6
-            </h1>
-            <span className={`text-[10px] md:text-xs font-mono font-bold tracking-[0.25em] ${isLight ? 'text-zinc-600' : 'text-[#f2ea5b]'} uppercase mt-[-2px] group-hover:text-[#ff7da2] transition-colors duration-300`}>
-              {STORE_TIENDA_INFO.tagline}
-            </span>
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setActiveTab('catalog')}>
+            <Logo size="sm" />
+            <div className="hidden md:flex flex-col items-start select-none leading-none">
+              <span className="text-[9px] font-mono font-black tracking-widest text-[#ff7da2] bg-[#ff7da2]/15 rounded px-1.5 py-0.5 border border-[#ff7da2]/20 uppercase">
+                PREMIUM DROP
+              </span>
+              <span className={`text-[9px] font-mono tracking-[0.15em] ${isLight ? 'text-zinc-500' : 'text-[#f2ea5b]'} uppercase mt-1`}>
+                {STORE_TIENDA_INFO.tagline}
+              </span>
+            </div>
           </div>
 
           {/* Center Tabs Navigation */}
@@ -501,79 +476,6 @@ export default function App() {
           </div>
         </div>
       </header>
-
-      {/* MIXTAPE CASSETTE CASSERA MUSIC WIDGET */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 pt-4">
-        <div className={`border rounded-xl p-3 flex flex-col md:flex-row items-center justify-between gap-4 select-none shadow-xl transition-colors duration-300 ${isLight ? 'bg-white border-zinc-200 text-zinc-900' : 'bg-[#121419]/90 border-zinc-800/80 text-white'}`}>
-          <div className="flex items-center gap-3">
-            {/* Spinning mixtape animation mock */}
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center border relative overflow-hidden flex-shrink-0 ${musicPlaying ? 'animate-spin' : ''} ${isLight ? 'bg-zinc-100 border-zinc-200' : 'bg-zinc-800 border-zinc-700'}`} style={{ animationDuration: '10s' }}>
-              <div className="w-4 h-4 bg-black rounded-full border border-zinc-600 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-teal-400 rounded-full" />
-              </div>
-            </div>
-            
-            <div className="text-left font-mono">
-              <span className={`text-[9px] font-semibold tracking-wider flex items-center gap-1 ${isLight ? 'text-zinc-550' : 'text-[#ff7da2]'}`}>
-                <Music className="w-2.5 h-2.5" /> MZB STREET RADIO mixtapes
-              </span>
-              <p className={`text-xs p-0 m-0 font-bold max-w-[250px] truncate leading-tight ${isLight ? 'text-zinc-900' : 'text-white'}`}>
-                {tracks[activeTrack].title}
-              </p>
-              <p className="text-[10px] text-zinc-500 m-0 p-0 leading-tight">
-                {tracks[activeTrack].author}
-              </p>
-            </div>
-          </div>
-
-          {/* Audio controls */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setActiveTrack((prev) => (prev + 1) % tracks.length);
-              }}
-              className={`p-1.5 border rounded text-[10px] font-mono transition-all cursor-pointer ${isLight ? 'bg-zinc-105 hover:bg-zinc-200 text-zinc-700 border-zinc-200' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'}`}
-            >
-              SIGUIENTE
-            </button>
-            <button
-              onClick={() => setMusicPlaying(!musicPlaying)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all border cursor-pointer ${
-                musicPlaying 
-                  ? isLight ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-800' : 'bg-teal-500/10 border-teal-550/30 text-[#6ae29a]' 
-                  : isLight ? 'bg-zinc-50 border-zinc-200 text-zinc-750' : 'bg-zinc-900/60 border-zinc-800 text-zinc-300'
-              }`}
-            >
-              {musicPlaying ? (
-                <>
-                  <Pause className="w-3.5 h-3.5" />
-                  <span>Sintonizando</span>
-                </>
-              ) : (
-                <>
-                  <Play className={`w-3.5 h-3.5 stroke-none ${isLight ? 'fill-emerald-600' : 'fill-[#ff4591]'}`} />
-                  <span>PLAY STREET BEATS</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Interactive Equalizer simulation */}
-          <div className="hidden lg:flex items-end gap-[3px] h-6 px-4">
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="w-[3px] bg-gradient-to-t from-teal-400 to-[#ff7da2] rounded-t"
-                style={{
-                  height: musicPlaying ? `${Math.floor(Math.random() * 100) + 10}%` : '15%',
-                  transition: 'height 160ms ease-in-out',
-                  animation: musicPlaying ? `equalizerWave ${1 + (i % 3) * 0.25}s ease-in-out infinite alternate` : 'none'
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* MOBILE LOWER NAVIGATION (visible on mobile to easily toggle) */}
       <div className={`sm:hidden fixed bottom-0 left-0 right-0 z-30 p-2 flex justify-around border-t ${isLight ? 'bg-white/95 border-zinc-200 shadow-lg' : 'bg-black/95 border-zinc-900'}`}>
@@ -901,7 +803,7 @@ export default function App() {
                 🏪 UBICACIÓN Y RECOJO DE PRODUCTOS (GRATUITO)
               </h3>
               <p className={`text-xs leading-relaxed ${isLight ? 'text-zinc-650' : 'text-zinc-300'}`}>
-                Nuestra tienda y taller está ubicado estratégicamente en **San Juan de Lurigancho**, a pasos de la estación del metro. Puedes recoger tus pedidos directamente sin costo adicional.
+                Nuestra tienda y taller está ubicado estratégicamente en Lima, a pasos de la Estación Esperanza. Puedes recoger tus pedidos directamente sin costo adicional.
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs font-mono">
