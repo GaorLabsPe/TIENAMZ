@@ -4,10 +4,11 @@ import { motion } from 'motion/react';
 interface ShirtMockupProps {
   productId: string;
   side: 'front' | 'back';
+  theme?: 'dark' | 'light';
   className?: string;
 }
 
-export const ShirtMockup: React.FC<ShirtMockupProps> = ({ productId, side, className = '' }) => {
+export const ShirtMockup: React.FC<ShirtMockupProps> = ({ productId, side, theme = 'dark', className = '' }) => {
   // Map product IDs to base fabric colors and designs.
   const getShirtConfig = (id: string) => {
     switch (id) {
@@ -46,27 +47,43 @@ export const ShirtMockup: React.FC<ShirtMockupProps> = ({ productId, side, class
   };
 
   const config = getShirtConfig(productId);
+  const isLight = theme === 'light';
 
   return (
-    <div className={`relative flex items-center justify-center w-full aspect-square bg-[#0f1115]/30 rounded-2xl overflow-hidden shadow-inner p-4 border border-zinc-800/20 group ${className}`}>
+    <div className={`relative flex items-center justify-center w-full aspect-square transition-all duration-300 rounded-2xl overflow-hidden shadow-inner p-4 group ${
+      isLight 
+        ? 'bg-[#e4e6eb]/55 border border-zinc-300/50' 
+        : 'bg-[#0f1115]/30 border border-zinc-800/20'
+    } ${className}`}>
       
       {/* Absolute Background Street Grid Layout */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
+      <div className={`absolute inset-0 pointer-events-none transition-all duration-300 bg-[size:16px_16px] ${
+        isLight
+          ? 'bg-[linear-gradient(rgba(0,0,0,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.035)_1px,transparent_1px)]'
+          : 'bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)]'
+      }`} />
 
       {/* Ambient background glow matching the shirt's theme */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-[80px] pointer-events-none opacity-40 mix-blend-screen"
+      <div 
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-[80px] pointer-events-none transition-all duration-300 ${
+          isLight ? 'opacity-25 mix-blend-multiply' : 'opacity-40 mix-blend-screen'
+        }`}
         style={{
-          background: productId === 'mzb-calle-todo' ? 'rgba(74, 222, 128, 0.3)' :
-                      productId === 'mzb-buen-dia' ? 'rgba(239, 68, 68, 0.3)' :
-                      productId === 'mzb-humanidad' ? 'rgba(99, 102, 241, 0.3)' :
-                      productId === 'mzb-riqueza-vida' ? 'rgba(245, 158, 11, 0.3)' :
-                      'rgba(244, 244, 245, 0.2)'
+          background: productId === 'mzb-calle-todo' ? 'rgba(74, 222, 128, 0.4)' :
+                      productId === 'mzb-buen-dia' ? 'rgba(239, 68, 68, 0.4)' :
+                      productId === 'mzb-humanidad' ? 'rgba(99, 102, 241, 0.4)' :
+                      productId === 'mzb-riqueza-vida' ? 'rgba(245, 158, 11, 0.4)' :
+                      'rgba(180, 180, 200, 0.3)'
         }}
       />
 
       <svg
         viewBox="0 0 500 500"
-        className="w-full h-full max-w-[340px] drop-shadow-[0_25px_25px_rgba(0,0,0,0.65)] select-none"
+        className={`w-full h-full max-w-[340px] select-none transition-all duration-300 ${
+          isLight 
+            ? 'drop-shadow-[0_15px_18px_rgba(0,0,0,0.22)]' 
+            : 'drop-shadow-[0_25px_25px_rgba(0,0,0,0.65)]'
+        }`}
       >
         <defs>
           {/* Logo Brand Gradient - Recreated matching the actual logo perfectly */}

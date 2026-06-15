@@ -206,15 +206,10 @@ export default function App() {
     msg += `===============================\n\n`;
     msg += `👤 *Cliente:* ${customerName.trim() || '(No brindado)'}\n`;
     msg += `📱 *Teléfono:* ${customerPhone.trim() || '(No brindado)'}\n`;
-    msg += `🚚 *Modalidad:* ${checkoutMode === 'delivery' ? '🚗 Envío por Delivery (S/ 10.00)' : '🏪 Recojo en Tienda (Estación Esperanza)'}\n\n`;
+    msg += `🚚 *Modalidad:* 🚗 Envío a Domicilio por Delivery (S/ 10.00)\n\n`;
 
-    if (checkoutMode === 'delivery') {
-      msg += `📍 *Dirección de Entrega:*\n${deliveryAddress.trim() || 'No colocado'}\n`;
-      msg += `🗺️ *Referencia:*\n${deliveryReference.trim() || 'No colocado'}\n\n`;
-    } else {
-      msg += `🏪 *Lugar de Recojo:*\n${STORE_TIENDA_INFO.storeAddress}\n`;
-      msg += `⏰ *Horario de Atención:*\n${STORE_TIENDA_INFO.storeHours}\n\n`;
-    }
+    msg += `📍 *Dirección de Entrega:*\n${deliveryAddress.trim() || 'No colocada'}\n`;
+    msg += `🗺️ *Referencia de Entrega:*\n${deliveryReference.trim() || 'No colocada'}\n\n`;
 
     msg += `👕 *DETALLE DE LA PRENDA(S):*\n`;
     cart.forEach((item, index) => {
@@ -227,15 +222,12 @@ export default function App() {
 
     msg += `\n-------------------------------\n`;
     msg += `💵 *Subtotal:* S/. ${cartSubtotal.toFixed(2)}\n`;
-    if (checkoutMode === 'delivery') {
-      msg += `🚗 *Costo de Delivery:* S/. 10.00\n`;
-    }
+    msg += `🚗 *Costo de Delivery:* S/. 10.00\n`;
     msg += `💰 *TOTAL A PAGAR:* S/. ${cartTotal.toFixed(2)}\n\n`;
 
     msg += `📲 *MÉTODO DE PAGO Y VERIFICACIÓN:*\n`;
-    msg += `- Pago realizado vía *YAPE* (S/. ${cartTotal.toFixed(2)})\n`;
-    msg += `- Código de Transacción: *${yapeTx.trim() || 'Pendiente enviar captura'}*\n\n`;
-    msg += `💬 _*Nota:* Adjunto el comprobante o captura de pantalla de mi yapeo a continuación de este mensaje para programar el despacho._\n\n`;
+    msg += `- Pago vía YAPE a realizarse al: ${STORE_TIENDA_INFO.yapeNumber} (Titular: ${STORE_TIENDA_INFO.yapeOwner})\n\n`;
+    msg += `💬 *Estado:* He generado mi pedido y en breve te enviaré la captura de pantalla o boucher de pago por este medio.\n\n`;
     msg += `⚡ *"${STORE_TIENDA_INFO.tagline.toUpperCase()}"*`;
 
     return `https://wa.me/${STORE_TIENDA_INFO.storePhone}?text=${encodeURIComponent(msg)}`;
@@ -243,11 +235,14 @@ export default function App() {
 
   const handleCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName || !customerPhone || (checkoutMode === 'delivery' && !deliveryAddress)) {
+    if (!customerName.trim() || !customerPhone.trim() || !deliveryAddress.trim() || !deliveryReference.trim()) {
       alert('Por favor, completa los campos requeridos (*).');
       return;
     }
     setCheckoutSubmitted(true);
+    // Directly open WhatsApp on submit
+    const whatsappLink = generateWhatsAppMessage();
+    window.open(whatsappLink, '_blank');
   };
 
   return (
@@ -680,6 +675,7 @@ export default function App() {
                       <ShirtMockup
                         productId={product.id}
                         side={activeSide}
+                        theme={theme}
                         className="group-hover:scale-[1.02] transition-transform duration-350"
                       />
 
@@ -876,6 +872,7 @@ export default function App() {
                 <ShirtMockup
                   productId={selectedProduct.id}
                   side={detailSide}
+                  theme={theme}
                   className="w-full"
                 />
 
@@ -1087,7 +1084,7 @@ export default function App() {
                             
                             {/* Visual Miniature shirt */}
                             <div className={`w-14 h-14 border rounded-lg overflow-hidden flex-shrink-0 relative p-1 transition-colors ${isLight ? 'bg-zinc-100 border-zinc-200' : 'bg-zinc-950 border-zinc-800'}`}>
-                              <ShirtMockup productId={item.product.id} side="front" className="scale-120" />
+                              <ShirtMockup productId={item.product.id} side="front" theme={theme} className="scale-120" />
                             </div>
 
                             {/* Info */}
@@ -1142,55 +1139,35 @@ export default function App() {
                       {/* CHECKOUT SCHEME CONTROL FORM */}
                       <form onSubmit={handleCheckoutSubmit} className={`pt-4 border-t space-y-4 text-left ${isLight ? 'border-zinc-200' : 'border-zinc-900'}`}>
                         
-                        <div className={`flex flex-col gap-1 pb-2 border-b ${isLight ? 'border-zinc-200' : 'border-zinc-900'}`}>
+                        <div className={`flex flex-col gap-1.5 pb-3 border-b ${isLight ? 'border-zinc-200' : 'border-zinc-900'}`}>
                           <span className="text-[10px] font-mono text-zinc-500 uppercase font-black">
-                            1. MODALIDAD DE ENTREGA o RECOJO
+                            1. MODALIDAD DE ENTREGA
                           </span>
-                          
-                          {/* Toggle checkout scheme */}
-                          <div className="flex gap-2.5 mt-1.5 select-none">
-                            <button
-                              type="button"
-                              onClick={() => setCheckoutMode('delivery')}
-                              className={`flex-1 py-2 font-mono text-[10px] font-bold rounded-lg border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                                checkoutMode === 'delivery'
-                                  ? isLight
-                                    ? 'bg-zinc-950 border-zinc-950 text-white font-black shadow-xs'
-                                    : 'bg-zinc-800 border-zinc-700 text-[#5fc1ff] font-black'
-                                  : isLight
-                                    ? 'bg-zinc-50 border-zinc-200 text-zinc-550 hover:text-black hover:bg-zinc-100'
-                                    : 'bg-zinc-950/40 border-zinc-900 text-zinc-400 hover:text-zinc-200'
-                              }`}
-                            >
-                              <Truck className="w-3.5 h-3.5" />
-                              <span>ENVÍO DELIVERY</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setCheckoutMode('pickup')}
-                              className={`flex-1 py-2 font-mono text-[10px] font-bold rounded-lg border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                                checkoutMode === 'pickup'
-                                  ? isLight
-                                    ? 'bg-zinc-950 border-zinc-950 text-white font-black shadow-xs'
-                                    : 'bg-zinc-800 border-zinc-700 text-[#6ae29a] font-black'
-                                  : isLight
-                                    ? 'bg-zinc-50 border-zinc-200 text-zinc-550 hover:text-black hover:bg-zinc-100'
-                                    : 'bg-zinc-950/40 border-zinc-900 text-zinc-400 hover:text-zinc-200'
-                              }`}
-                            >
-                              <MapPin className="w-3.5 h-3.5" />
-                              <span>RECOJO EN TIENDA</span>
-                            </button>
+                          <div className={`flex items-center gap-2.5 p-3 rounded-lg border font-mono text-xs font-semibold ${
+                            isLight 
+                              ? 'bg-zinc-100/80 border-zinc-200 text-zinc-800' 
+                              : 'bg-zinc-950/65 border-zinc-900 text-[#5fc1ff]'
+                          }`}>
+                            <Truck className="w-4 h-4 flex-shrink-0 text-[#ff7da2]" />
+                            <div className="flex-1">
+                              <p className="font-bold">ENVÍO A DOMICILIO (Lima Standard)</p>
+                              <p className={`text-[10px] font-normal mt-0.5 ${isLight ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                                Despacho a tu dirección por un costo único de S/. 10.00
+                              </p>
+                            </div>
+                            <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${isLight ? 'bg-zinc-200 text-zinc-800' : 'bg-zinc-900 text-[#5fc1ff]'}`}>
+                              S/. 10.00
+                            </span>
                           </div>
                         </div>
 
                         {/* Customer direct parameters form inputs */}
                         <div className="space-y-3">
                           <span className="text-[10px] font-mono text-zinc-500 uppercase font-black block">
-                            2. DATOS DEL COMPRADOR (Y COMPROBANTE)
+                            2. DATOS DEL COMPRADOR (ENVÍO)
                           </span>
                           
-                          <div className="space-y-2 font-mono text-xs">
+                          <div className="space-y-2.5 font-mono text-xs">
                             <div>
                               <label className="text-[9px] text-zinc-500 block mb-1">Nombre Completo *</label>
                               <input
@@ -1198,7 +1175,7 @@ export default function App() {
                                 value={customerName}
                                 onChange={(e) => setCustomerName(e.target.value)}
                                 placeholder="Ingresa tu nombre y apellido"
-                                className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-500' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-750'}`}
+                                className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-550' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-700'}`}
                                 required
                               />
                             </div>
@@ -1210,68 +1187,56 @@ export default function App() {
                                 value={customerPhone}
                                 onChange={(e) => setCustomerPhone(e.target.value)}
                                 placeholder="Ej: 987654321"
-                                className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-500' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-750'}`}
+                                className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-550' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-700'}`}
                                 required
                               />
                             </div>
 
-                            {/* Conditionally rendering inputs based on delivery vs pickup */}
-                            {checkoutMode === 'delivery' ? (
-                              <div className="space-y-2">
-                                <div>
-                                  <label className="text-[9px] text-zinc-500 block mb-1">Dirección Exacta de Envío *</label>
-                                  <textarea
-                                    value={deliveryAddress}
-                                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                                    placeholder="Calle, avenida, Nro, dpto, urbanización y Distrito"
-                                    className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors h-14 resize-none ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-500' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-750'}`}
-                                    required
-                                  />
-                                </div>
-                                <div>
-                                  <label className="text-[9px] text-zinc-500 block mb-1">Referencia obligatoria de envío *</label>
-                                  <input
-                                    type="text"
-                                    value={deliveryReference}
-                                    onChange={(e) => setDeliveryReference(e.target.value)}
-                                    placeholder="Ej: Frente al parque, casa de rejas negras, etc."
-                                    className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-500' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-750'}`}
-                                    required
-                                  />
-                                </div>
+                            <div className="space-y-2">
+                              <div>
+                                <label className="text-[9px] text-zinc-500 block mb-1">Dirección Exacta de Envío *</label>
+                                <textarea
+                                  value={deliveryAddress}
+                                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                                  placeholder="Calle, avenida, Nro, dpto, urbanización y Distrito"
+                                  className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors h-14 resize-none ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-550' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-700'}`}
+                                  required
+                                />
                               </div>
-                            ) : (
-                              /* Pickup Store static instructions displayed cleanly */
-                              <div className={`p-3 border rounded-lg space-y-1 font-sans leading-snug transition-colors ${isLight ? 'bg-zinc-50 border-zinc-200 text-zinc-600' : 'bg-zinc-950/70 border-zinc-900 text-zinc-400'}`}>
-                                <span className={`font-mono text-[9px] font-bold block uppercase ${isLight ? 'text-emerald-700' : 'text-[#6ae29a]'}`}>
-                                  📍 ¿DÓNDE RECOGER?
-                                </span>
-                                <p className={`text-[11.5px] leading-tight font-semibold ${isLight ? 'text-zinc-800' : 'text-zinc-300'}`}>
-                                  {STORE_TIENDA_INFO.storeAddress}
-                                </p>
-                                <span className={`text-[10px] block ${isLight ? 'text-zinc-500' : 'text-zinc-500'}`}>
-                                  🕜 Horarios: {STORE_TIENDA_INFO.storeHours}
-                                </span>
-                              </div>
-                            )}
-
-                            {/* YAPE INPUT FOR CONFIRMATION CODE */}
-                            <div className="pt-2">
-                              <div className={`border p-3 rounded-lg space-y-2 transition-colors ${isLight ? 'bg-[#9d246c]/5 border-[#9d246c]/15' : 'bg-[#18131e] border-[#a15cc4]/20'}`}>
-                                <div className={`flex items-center gap-1 text-[10px] font-black uppercase ${isLight ? 'text-[#9d246c]' : 'text-[#ff7da2]'}`}>
-                                  <Coins className="w-3.5 h-3.5 text-[#f2ea5b] fill-current text-purple-700" />
-                                  <span>3. YAPE de Confirmación</span>
-                                </div>
-                                <p className={`text-[10px] font-sans leading-snug ${isLight ? 'text-zinc-650' : 'text-zinc-400'}`}>
-                                  Envía un pago de <strong className={isLight ? 'text-zinc-900' : 'text-white'}>S/. {cartTotal.toFixed(2)}</strong> al celular <strong className={isLight ? 'text-zinc-900' : 'text-white'}>{STORE_TIENDA_INFO.yapeNumber}</strong>. Escribe el número de transacción de 8 dígitos aquí abajo para confirmar de inmediato.
-                                </p>
+                              <div>
+                                <label className="text-[9px] text-zinc-500 block mb-1">Referencia obligatoria de envío *</label>
                                 <input
                                   type="text"
-                                  value={yapeTx}
-                                  onChange={(e) => setYapeTx(e.target.value)}
-                                  placeholder="Código de Operación (Yape)"
-                                  className={`w-full rounded-lg p-2.5 text-xs text-center tracking-widest font-black focus:outline-none transition-colors ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-[#9d246c]' : 'bg-[#0a0b0d] border border-zinc-800/80 text-white focus:border-[#a15cc4]'}`}
+                                  value={deliveryReference}
+                                  onChange={(e) => setDeliveryReference(e.target.value)}
+                                  placeholder="Ej: Frente al parque, casa de rejas negras, etc."
+                                  className={`w-full rounded-lg p-2.5 text-xs focus:outline-none transition-colors ${isLight ? 'bg-white border border-zinc-300 text-zinc-900 focus:border-zinc-550' : 'bg-[#121316] border border-zinc-800/80 text-white focus:border-zinc-700'}`}
+                                  required
                                 />
+                              </div>
+                            </div>
+
+                            {/* YAPE DIRECT INFO */}
+                            <div className="pt-1">
+                              <div className={`border p-3 rounded-lg space-y-1.5 transition-colors ${isLight ? 'bg-[#9d246c]/5 border-[#9d246c]/15' : 'bg-[#18131e] border-[#a15cc4]/20'}`}>
+                                <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase ${isLight ? 'text-[#9d246c]' : 'text-[#ff7da2]'}`}>
+                                  <Coins className="w-3.5 h-3.5 text-[#f2ea5b] fill-current" />
+                                  <span>3. REALIZA EL PAGO POR YAPE</span>
+                                </div>
+                                <p className={`text-[11px] font-sans leading-relaxed ${isLight ? 'text-zinc-600' : 'text-zinc-400'}`}>
+                                  Yapea el monto total de tu pedido a este número:
+                                </p>
+                                <div className={`p-2 rounded-md text-center flex flex-col justify-center items-center ${isLight ? 'bg-white text-zinc-800 border border-zinc-200' : 'bg-[#090a0d] text-zinc-100 border border-zinc-900'}`}>
+                                  <span className={`text-[17px] font-black tracking-wider ${isLight ? 'text-[#9d246c]' : 'text-[#f4e253]'}`}>
+                                    {STORE_TIENDA_INFO.yapeNumber}
+                                  </span>
+                                  <span className="text-[9px] text-zinc-500 uppercase font-mono mt-0.5">
+                                    Titular: {STORE_TIENDA_INFO.yapeOwner}
+                                  </span>
+                                </div>
+                                <p className={`text-[10px] font-sans leading-normal text-center text-zinc-500`}>
+                                  Al hacer clic abajo, se registrará el pedido y se te redirigirá a WhatsApp de la empresa para confirmarlo de inmediato y adjuntar tu boucher.
+                                </p>
                               </div>
                             </div>
 
@@ -1279,12 +1244,13 @@ export default function App() {
                         </div>
 
                         {/* Submit Order Trigger Form button */}
-                        <div className="pt-3">
+                        <div className="pt-2">
                           <button
                             type="submit"
-                            className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-black font-mono text-center font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg hover:brightness-105 cursor-pointer"
+                            className="w-full py-3.5 bg-[#25d366] hover:bg-[#20ba5a] text-black font-mono text-center font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg hover:brightness-105 cursor-pointer flex items-center justify-center gap-2"
                           >
-                            ✅ VALIDAR REGISTRO DE DATOS
+                            <Phone className="w-4 h-4 fill-black stroke-none" />
+                            <span>Confirmar y Enviar por WhatsApp</span>
                           </button>
                         </div>
 
@@ -1304,12 +1270,10 @@ export default function App() {
                         <span className={isLight ? 'text-zinc-700' : 'text-zinc-300'}>S/. {cartSubtotal.toFixed(2)}</span>
                       </div>
                       
-                      {checkoutMode === 'delivery' && (
-                        <div className="flex justify-between text-zinc-550">
-                          <span>Delivery (Lima standard):</span>
-                          <span className={`${isLight ? 'text-blue-750' : 'text-[#5fc1ff]'} font-semibold`}>S/. 10.00</span>
-                        </div>
-                      )}
+                      <div className="flex justify-between text-zinc-550">
+                        <span>Delivery (Lima standard):</span>
+                        <span className={`${isLight ? 'text-blue-750' : 'text-[#5fc1ff]'} font-semibold`}>S/. 10.00</span>
+                      </div>
 
                       <div className={`flex justify-between text-sm pt-2 border-t font-bold ${isLight ? 'border-zinc-200' : 'border-zinc-900'}`}>
                         <span className={isLight ? 'text-zinc-950' : 'text-white'}>Monto Total:</span>
@@ -1319,7 +1283,7 @@ export default function App() {
 
                     {/* REDIRECT TO WHATSAPP ACTION COMPILER */}
                     <AnimatePresence>
-                      {checkoutSubmitted ? (
+                      {checkoutSubmitted && (
                         <motion.div
                           initial={{ scale: 0.95, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
@@ -1327,30 +1291,23 @@ export default function App() {
                         >
                           <div className={`p-3.5 rounded-xl border text-center transition-colors ${isLight ? 'bg-emerald-50/50 border-emerald-300 text-zinc-800' : 'bg-gradient-to-r from-emerald-950/50 via-teal-950/40 to-black border-emerald-500/20 text-zinc-400'}`}>
                             <span className={`text-[10px] font-mono font-bold block uppercase ${isLight ? 'text-emerald-800' : 'text-[#6ae29a]'}`}>
-                              🎉 DATOS VERIFICADOS CON ÉXITO
+                              🎉 ¡PEDIDO ENVIADO CON ÉXITO!
                             </span>
                             <p className="text-[11px] font-sans mt-1">
-                              Todo listo para compilar tu pedido en formato oficial de WhatsApp. Haz clic abajo para enviarlo.
+                              Si no se abrió la ventana de WhatsApp, puedes hacer clic aquí abajo para abrirla manualmente y enviarnos la captura o boucher de tu pago.
                             </p>
                           </div>
 
-                          {/* Beautiful direct <a> anchor button to avoid browser blocks */}
                           <a
                             href={generateWhatsAppMessage()}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full py-3 bg-[#25d366] hover:bg-[#20ba5a] text-black text-center font-mono text-xs font-black tracking-widest uppercase rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                            className="w-full py-3 bg-[#25d366] hover:bg-[#20ba5a] text-black text-center font-mono text-xs font-black tracking-widest uppercase rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer animate-pulse"
                           >
                             <Phone className="w-4 h-4 fill-black stroke-none" />
-                            <span>ENVIAR PEDIDO POR WHATSAPP</span>
+                            <span>Abrir WhatsApp Manualmente</span>
                           </a>
                         </motion.div>
-                      ) : (
-                        <div className={`p-3 text-center rounded-xl border transition-colors ${isLight ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-zinc-950 text-[#ff7da2] border-zinc-900'}`}>
-                          <span className="text-[10.5px] font-mono">
-                            ⚠️ Completa y valida tus datos de envío arriba para activar el envío por WhatsApp
-                          </span>
-                        </div>
                       )}
                     </AnimatePresence>
 
